@@ -3,11 +3,11 @@
 <a class="dropdown-item" Item="@Item" @onclick="e=> Dropdown.HandleSelect(Item, ChildContent)" >@ChildContent(Item)</a>
 
 @code {
-    [CascadingParameter(Name = "Dropdown")]
-    public MyDropdown<TItem> Dropdown { get; set; }
+    [CascadingParameter(Name = "Dropdown"), EditorRequired]
+    public MyDropdown<TItem> Dropdown { get; set; } = null!;
 
-    [Parameter]
-    public TItem Item { get; set; }
-    [Parameter]
-    public RenderFragment<TItem> ChildContent { get; set; }
+    [Parameter, EditorRequired]
+    public TItem Item { get; set; } = default(TItem)!;
+    [Parameter, EditorRequired]
+    public RenderFragment<TItem> ChildContent { get; set; } = null!;
 }

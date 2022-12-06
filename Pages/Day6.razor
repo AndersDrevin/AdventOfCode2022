@@ -1,0 +1,26 @@
+@page "/day6"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Day6</PageTitle>
+
+<h1>Day6</h1>
+
+<button class="btn btn-primary" @onclick="Day6_1">Räkna 6_1</button>
+<p>Resultat dag 6_1 = @day6_1Result</p>
+<hr />
+<button class="btn btn-primary" @onclick="Day6_2">Räkna 6_2</button>
+<p>Resultat dag 6_2 = @day6_2Result</p>
+
+
+@code{
+    private int day6_1Result;
+    private int day6_2Result;
+
+    private void Day6_1(){
+        day6_1Result = DayInputService.Day6_1();
+    }
+    private void Day6_2(){
+        day6_2Result = DayInputService.Day6_2();
+    }
+}
