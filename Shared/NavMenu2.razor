@@ -1,0 +1,72 @@
+﻿@inject NavigationManager NavManager
+
+<nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Blazor app</a>
+        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="@NavMenuCssClass navbar-collapse" @onclick="ToggleNavMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="counter">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="fetchdata">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <MyDropdown TItem="string" OnSelected="@OnSelected" >
+                        <InitialTip>Välj dag</InitialTip>
+                        <ChildContent>
+                            <MyDropdownListItem Item="@list[0]">@list[0]</MyDropdownListItem>
+                            <MyDropdownListItem Item="@list[1]">@list[1]</MyDropdownListItem>
+                            <div class="dropdown-divider"></div>
+                            <MyDropdownListItem Item="@list[2]">@list[2]</MyDropdownListItem>
+                            <MyDropdownListItem Item="@list[3]">@list[3]</MyDropdownListItem>
+                            <MyDropdownListItem Item="@list[4]">@list[4]</MyDropdownListItem>
+                        </ChildContent>
+                    </MyDropdown>
+
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private List<string> list = new() { "day1", "day2", "day3","day4", "day5" };
+    private bool collapseNavMenu = true;
+    private bool collapseSubMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string? SubMenuCssClass => collapseSubMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleSubMenu()
+    {
+        collapseSubMenu = !collapseSubMenu;
+    }
+
+    private void OnSelected(string selection)
+    {
+        NavManager.NavigateTo(selection);
+
+    }
+}

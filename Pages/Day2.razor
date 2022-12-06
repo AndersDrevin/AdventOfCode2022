@@ -1,0 +1,32 @@
+﻿@page "/day2"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Dag 2</PageTitle>
+
+<h1>Dag 2</h1>
+
+<p role="status">Dag2 poäng: @day2?.HomeScore</p>
+
+<button class="btn btn-primary" @onclick="ExecuteDay2">Räkna dag 2!</button>
+<button class="btn btn-primary" @onclick="ExecuteDay2_2">Räkna dag 2_2!</button>
+
+@code {
+    private RPSRaces? day2 = null;
+
+    private void ExecuteDay2()
+    {
+        day2 = DayInputService.Day2();
+    }
+
+    private void ExecuteDay2_2()
+    {
+        day2 = DayInputService.Day2_2();
+    }
+
+    //protected override void OnInitialized()
+    //{
+    //    day1 = DayInputService.Day1();
+    //}
+
+}

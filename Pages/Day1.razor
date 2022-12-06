@@ -1,0 +1,27 @@
+﻿@page "/day1"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Dag 1</PageTitle>
+
+<h1>Dag 1</h1>
+
+<p role="status">Dag1 del 1: @day1?.LargestBackPack</p>
+<p role="status">Dag1 del 2: @day1?.SumOfThreeLargest</p>
+
+<button class="btn btn-primary" @onclick="ExecuteDay1">Räkna dag 1!</button>
+
+@code {
+    private FoodInventory? day1 = null;
+
+    private void ExecuteDay1()
+    {
+        day1 = DayInputService.Day1();
+    }
+
+    //protected override void OnInitialized()
+    //{
+    //    day1 = DayInputService.Day1();
+    //}
+
+}
