@@ -1,0 +1,87 @@
+@page "/day3"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Day3</PageTitle>
+
+<h1>Day3</h1>
+
+<button class="btn btn-primary" @onclick="GetRucksacks">Hämta ryggor</button>
+<button class="btn btn-primary" @onclick="Day3_1">Räkna 3_1</button>
+<button class="btn btn-primary" @onclick="Day3_2">Räkna 3_2</button>
+
+<p role="status">Antal ryggsäckar: @rucksacks?.Count()</p>
+<p role="status">Sum of faulty items: @sumOfFaultyItems</p>
+<p role="status">Sum of all badges: @sumOfAllBadges</p>
+
+<hr />
+
+<h4>Group badges</h4>
+<table class="table table-sm">
+    <thead><tr><th>Badge</th></tr></thead>
+    <tbody>
+        @foreach(var badge in GroupBadges){
+            <tr><td>@badge</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>Ryggor</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fack1</th>
+            <th>Fack2</th>
+            <th>Faulty item</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(rucksacks != null){
+            foreach(var rucksack in rucksacks){
+                <tr>
+                    <td>@rucksack.Compartment1</td>
+                    <td>@rucksack.Compartment2</td>
+                    <td>@rucksack.GetFaultyItem()</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    private IEnumerable<Rucksack>? rucksacks = null;
+    private int? sumOfFaultyItems;
+    private int sumOfAllBadges = 0;
+    private List<string> GroupBadges = new();
+
+    private void GetRucksacks()
+    {
+        rucksacks = DayInputService.Day3();
+    }
+
+    private void Day3_1(){
+        GetRucksacks();
+        sumOfFaultyItems = rucksacks?.Sum(x => x.GetFaultyItemAsPriority());
+    }
+
+    private void Day3_2()
+    {
+        GetRucksacks();
+        if(rucksacks == null) return;
+        sumOfAllBadges = 0;
+        List<Rucksack> group = new();
+        foreach(var rucksack in rucksacks){
+            group.Add(rucksack);
+            if(group.Count() == 3){
+                var groupBadge = group[0].TotalContent
+                .Where(x => group[1].TotalContent.Contains(x))
+                .Where(y => group[2].TotalContent.Contains(y));
+                if(groupBadge != null){
+                    GroupBadges.Add(string.Concat(groupBadge));
+                    sumOfAllBadges += group[0].GetCharAsPriority(groupBadge.First());
+                }
+                group.Clear();
+            }
+        }
+    }
+}

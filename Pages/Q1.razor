@@ -1,0 +1,40 @@
+@page "/q1"
+<h5>Testar input binding</h5>
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">@@</span>
+  <input type="text" @bind="username" @bind:event="oninput" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+</div>
+<p>Användarnamn (variabel) @username</p>
+
+<hr />
+<h5>Test med listruta</h5>
+<p>
+    <label>
+        Select one or more cars: 
+        <select @onchange="SelectedCarsChanged" multiple>
+            <option value="audi">Audi</option>
+            <option value="jeep">Jeep</option>
+            <option value="opel">Opel</option>
+            <option value="saab">Saab</option>
+            <option value="volvo">Volvo</option>
+        </select>
+    </label>
+</p>
+
+<p>
+    Selected Cars: @string.Join(", ", SelectedCars)
+</p>
+
+
+@code{
+    private string? username;
+    public string[] SelectedCars { get; set; } = new string[] { };
+
+        void SelectedCarsChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            SelectedCars = (string[])e.Value;
+        }
+    }
+}
