@@ -12,7 +12,10 @@
 <p>Antal filer i root:@day7?.Files.Count</p>
 <hr />
 <button class="btn btn-primary" @onclick="Day7_2">Räkna 7_2</button>
-<p>Resultat dag 7_2 = @day7_2Result</p>
+<p>Total Storlek @totSize</p>
+<p>Ledigt: @sizeLeft</p>
+<p>Att radera för installation: @sizeToErase</p>
+<p>Minsta möjliga att radera (svaret): @smallestFolder</p>
 <hr />
 <table class="table table-sm">
     <thead>
@@ -43,7 +46,10 @@
 @code {
     private int day7_1Result;
     private Folder7? day7 = null;
-    private int day7_2Result;
+    private int totSize;
+    private int sizeLeft;
+    private int sizeToErase;
+    private int smallestFolder;
 
     private void Day7_1()
     {
@@ -56,6 +62,11 @@
     }
     private void Day7_2()
     {
-        //day7_2Result = DayInputService.Day7_2();
+        if(day7 == null) day7 = DayInputService.Day7_1();
+        totSize = day7.FolderSize;
+        sizeLeft = 70000000 - totSize;
+        sizeToErase = 30000000 - sizeLeft;
+        smallestFolder = totSize;
+        day7.FindFolderToDelete(day7, sizeToErase, ref smallestFolder);
     }
 }

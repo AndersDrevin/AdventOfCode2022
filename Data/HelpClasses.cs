@@ -309,29 +309,29 @@ public class File7
 public class Folder7
 {
     public Folder7() { }
-    public Folder7(string name) { Name = name; }
+    public Folder7(string name, Folder7? parentFolder) { Name = name; ParentFolder = parentFolder; }
     public Folder7? ParentFolder { get; set; }
     public string Name { get; set; } = string.Empty;
     public List<Folder7> Folders { get; set; } = new List<Folder7>();
     public List<File7> Files { get; set; } = new List<File7>();
+    public void FindFolderToDelete(Folder7 current, int minSize, ref int smallest)
+    {
+        var size = current.FolderSize;
+        if(size >= minSize && size < smallest)
+            smallest = size;
+        foreach(var folder in current.Folders){
+            FindFolderToDelete(folder, minSize, ref smallest);
+        }
+    }
     public void FindAll100KFolders(Folder7 current, ref int sum)
     {
         var size = current.FolderSize;
-        Console.WriteLine($"Size:{size}");
         if (size <= 100000) sum += size;
         foreach(var folder in current.Folders)
             FindAll100KFolders(folder, ref sum);
     }
     public int FolderSize
     {
-        get
-        {
-            var size = Files.Sum(x => x.Size);
-            foreach(var folder in Folders)
-            {
-                size += folder.FolderSize;
-            }
-            return size;
-        }
+        get => Files.Sum(x => x.Size) + Folders.Sum(x => x.FolderSize);
     }
 }

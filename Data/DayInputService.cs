@@ -203,9 +203,10 @@ public class DayInputService
 
     public Folder7 Day7_ReadDirectoryStructure()
     {
-        Folder7 root = new("/");
+        Folder7 root = new("/", null);
         Stack<string> structureStack = new();
-        Array.ForEach(Day7Input.Split("\r\n").Reverse().ToArray(), x => { structureStack.Push(x); });
+        Array.ForEach(Day7Input.Split("\n").Reverse().ToArray(), x => { structureStack.Push(x); });
+        Console.WriteLine($"stackstorlek:{structureStack.Count()}");
         Day7_Iterate(structureStack, root);
         return root;
 
@@ -244,8 +245,7 @@ public class DayInputService
                 break;
             case "dir":
                 //Folder
-                Console.WriteLine($"Adding folder {rowA[1]}");
-                currentFolder.Folders.Add(new Folder7(rowA[1]));
+                currentFolder.Folders.Add(new Folder7(rowA[1], currentFolder));
                 Day7_Iterate(structureStack, currentFolder);
                 break;
             default:
