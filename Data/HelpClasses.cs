@@ -234,3 +234,104 @@ public class CrateStack{
     public Stack<char> Crates{get;set;} = new Stack<char>();
 }
 
+public class CleaningElvesPair
+{
+    public CleaningElvesPair(CleaningElf e1, CleaningElf e2)
+    {
+        Elf1 = e1;
+        Elf2 = e2;
+    }
+    public CleaningElf? Elf1 { get; set; }
+    public CleaningElf? Elf2 { get; set; }
+    public bool AssignmentsOverlapsSome
+    {
+        get => AssignmentsOverlapsSome1 || AssignmentsOverlapsSome2;
+    }
+    public bool AssignmentsOverlapsSome1
+    {
+        get
+        {
+            if (Elf1 == null || Elf2 == null) return false;
+            return
+                (Elf1.Assignment.Start.Value >= Elf2.Assignment.Start.Value &&
+                Elf1.Assignment.Start.Value <= Elf2.Assignment.End.Value) ||
+                (Elf1.Assignment.End.Value >= Elf2.Assignment.Start.Value &&
+                Elf1.Assignment.End.Value <= Elf2.Assignment.End.Value);
+        }
+    }
+    public bool AssignmentsOverlapsSome2
+    {
+        get
+        {
+            if (Elf1 == null || Elf2 == null) return false;
+            return
+                (Elf2.Assignment.Start.Value >= Elf1.Assignment.Start.Value &&
+                Elf2.Assignment.Start.Value <= Elf1.Assignment.End.Value) ||
+                (Elf2.Assignment.End.Value >= Elf1.Assignment.Start.Value &&
+                Elf2.Assignment.End.Value <= Elf1.Assignment.End.Value);
+        }
+    }
+    public bool AssignmentsFullyOverlaps
+    {
+        get
+        {
+            if (Elf1 == null || Elf2 == null) return false;
+            return
+                (Elf1.Assignment.Start.Value >= Elf2.Assignment.Start.Value &&
+                Elf1.Assignment.End.Value <= Elf2.Assignment.End.Value) ||
+                (Elf2.Assignment.Start.Value >= Elf1.Assignment.Start.Value &&
+                Elf2.Assignment.End.Value <= Elf1.Assignment.End.Value);
+        }
+    }
+}
+
+public class CleaningElf
+{
+    public CleaningElf(int from, int to)
+    {
+        Assignment = new Range(from, to);
+    }
+    public Range Assignment { get; set; }
+}
+
+public class File7
+{
+    public File7() { }
+    public File7(string name, int size)
+    {
+        Name = name;
+        Size = size;
+    }
+    public string Name { get; set; } = String.Empty;
+    public int Size { get; set; }
+}
+
+public class Folder7
+{
+    public Folder7() { }
+    public Folder7(string name) { Name = name; }
+    public Folder7? ParentFolder { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public List<Folder7> Folders { get; set; } = new List<Folder7>();
+    public List<File7> Files { get; set; } = new List<File7>();
+    public void FindAll100KFolders(Folder7 current, ref int sum)
+    {
+        var size = current.FolderSize;
+        Console.WriteLine($"Size:{size}");
+        if (size <= 100000) sum += size;
+        foreach(var folder in current.Folders)
+            FindAll100KFolders(folder, ref sum);
+    }
+    public int FolderSize
+    {
+        get
+        {
+            var size = Files.Sum(x => x.Size);
+            foreach(var folder in Folders)
+            {
+                size += folder.FolderSize;
+            }
+            return size;
+        }
+    }
+}

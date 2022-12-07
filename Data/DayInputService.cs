@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Routing.Tree;
+using System.Linq;
+
 namespace AdventOfCode2022.Data;
 public class DayInputService
 {
@@ -23,6 +26,10 @@ public class DayInputService
 
     private string Day6Input{
         get => File.ReadAllText("./Files/day6input.txt");
+    }
+    private string Day7Input
+    {
+        get => File.ReadAllText("./Files/day7input.txt");
     }
 
     public RPSRaces Day2()
@@ -194,6 +201,69 @@ public class DayInputService
 
     }
 
+    public Folder7 Day7_ReadDirectoryStructure()
+    {
+        Folder7 root = new("/");
+        Stack<string> structureStack = new();
+        Array.ForEach(Day7Input.Split("\r\n").Reverse().ToArray(), x => { structureStack.Push(x); });
+        Day7_Iterate(structureStack, root);
+        return root;
+
+    }
+
+    private void Day7_Iterate(Stack<string> structureStack, Folder7? currentFolder)
+    {
+        if (currentFolder == null) return;
+        if (!structureStack.TryPop(out string? row)) return;
+        if (row == null) return;
+        var rowA = row.Split(" ");
+        switch (rowA[0])
+        {
+            case "$":
+                //Command.
+                switch (rowA[1])
+                {
+                    case "cd":
+                        switch (rowA[2])
+                        {
+                            case "/":
+                                Day7_Iterate(structureStack, currentFolder.ParentFolder ?? currentFolder);
+                                break;
+                            case "..":
+                                Day7_Iterate(structureStack, currentFolder.ParentFolder);
+                                break;
+                            default:
+                                Day7_Iterate(structureStack, currentFolder.Folders.FirstOrDefault(x => x.Name == rowA[2]));
+                                break;
+                        }
+                        break;
+                    case "ls":
+                        Day7_Iterate(structureStack, currentFolder);
+                        break;
+                }
+                break;
+            case "dir":
+                //Folder
+                Console.WriteLine($"Adding folder {rowA[1]}");
+                currentFolder.Folders.Add(new Folder7(rowA[1]));
+                Day7_Iterate(structureStack, currentFolder);
+                break;
+            default:
+                //File
+                currentFolder.Files.Add(new File7(rowA[1], int.Parse(rowA[0])));
+                Day7_Iterate(structureStack, currentFolder);
+                break;
+        }
+
+
+    }
+
+    public Folder7 Day7_1()
+    {
+        var root = Day7_ReadDirectoryStructure();
+        return root;
+    }
+
     private bool IsMessageMarker(List<char> candidate){
         for(var i=0; i<14; i++){
             if(candidate.Where(x => x == candidate[i]).Count() != 1) return false;
@@ -293,53 +363,6 @@ public class DayInputService
 
     public int Day4_2() => EatInputDay4().Where(x => x.AssignmentsOverlapsSome).Count();
 
-    public class CleaningElvesPair{
-        public CleaningElvesPair(CleaningElf e1, CleaningElf e2){
-            Elf1 = e1;
-            Elf2 = e2;
-        }
-        public CleaningElf? Elf1 { get; set; }
-        public CleaningElf? Elf2 { get; set; }
-        public bool AssignmentsOverlapsSome{
-            get => AssignmentsOverlapsSome1 || AssignmentsOverlapsSome2;
-        }
-        public bool AssignmentsOverlapsSome1{
-            get {
-                if(Elf1 == null || Elf2 == null) return false;
-                return
-                    (Elf1.Assignment.Start.Value >= Elf2.Assignment.Start.Value &&
-                    Elf1.Assignment.Start.Value <= Elf2.Assignment.End.Value) ||
-                    (Elf1.Assignment.End.Value >= Elf2.Assignment.Start.Value &&
-                    Elf1.Assignment.End.Value <=  Elf2.Assignment.End.Value);
-            }
-        }
-        public bool AssignmentsOverlapsSome2{
-            get {
-                if(Elf1 == null || Elf2 == null) return false;
-                return
-                    (Elf2.Assignment.Start.Value >= Elf1.Assignment.Start.Value &&
-                    Elf2.Assignment.Start.Value <= Elf1.Assignment.End.Value) ||
-                    (Elf2.Assignment.End.Value >= Elf1.Assignment.Start.Value &&
-                    Elf2.Assignment.End.Value <=  Elf1.Assignment.End.Value);
-            }
-        }
-        public bool AssignmentsFullyOverlaps{
-            get{
-                if(Elf1 == null || Elf2 == null) return false;
-                return
-                    (Elf1.Assignment.Start.Value >= Elf2.Assignment.Start.Value &&
-                    Elf1.Assignment.End.Value <= Elf2.Assignment.End.Value) ||
-                    (Elf2.Assignment.Start.Value >= Elf1.Assignment.Start.Value &&
-                    Elf2.Assignment.End.Value <= Elf1.Assignment.End.Value);
-            }
-        }
-    }
 
-    public class CleaningElf{
-        public CleaningElf(int from, int to){
-            Assignment = new Range(from, to);
-        }
-        public Range Assignment{get;set;}
-    }
 
 }

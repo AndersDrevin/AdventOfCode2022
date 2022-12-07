@@ -1,0 +1,61 @@
+﻿@page "/day7"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Day7</PageTitle>
+
+<h1>Day7</h1>
+
+<button class="btn btn-primary" @onclick="Day7_1">Räkna 7_1</button>
+<p>Resultat dag 7_1 = @day7_1Result</p>
+<p>Antal mappar i root:@day7?.Folders?.Count</p>
+<p>Antal filer i root:@day7?.Files.Count</p>
+<hr />
+<button class="btn btn-primary" @onclick="Day7_2">Räkna 7_2</button>
+<p>Resultat dag 7_2 = @day7_2Result</p>
+<hr />
+<table class="table table-sm">
+    <thead>
+        <tr><th>Typ</th><th>Namn</th><th>Storlek</th></tr>
+    </thead>
+    <tbody>
+        @foreach(var folder in day7?.Folders ?? new List<Folder7>())
+        {
+            <tr>
+                <td>Dir</td>
+                <td>@folder.Name</td>
+                <td>x</td>
+            </tr>
+            
+        }
+        @foreach(var file in day7?.Files ?? new List<File7>())
+        {
+            <tr>
+                <td>File</td>
+                <td>@file.Name</td>
+                <td>@file.Size</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private int day7_1Result;
+    private Folder7? day7 = null;
+    private int day7_2Result;
+
+    private void Day7_1()
+    {
+        day7 = DayInputService.Day7_1();
+        var result = 0;
+        day7.FindAll100KFolders(day7, ref result);
+        day7_1Result = result;
+        //day7_1Result = 3;
+
+    }
+    private void Day7_2()
+    {
+        //day7_2Result = DayInputService.Day7_2();
+    }
+}
