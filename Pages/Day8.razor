@@ -1,0 +1,43 @@
+@page "/day8"
+@using AdventOfCode2022.Data
+@inject DayInputService DayInputService
+
+<PageTitle>Day8</PageTitle>
+
+<h1>Day8</h1>
+
+<button class="btn btn-primary" @onclick="Day8_1">Räkna 8_1</button>
+<p>Resultat dag 8_1 = @day8_1Result</p>
+<hr />
+<p>Total trees: @forest?.Trees?.Count()</p>
+@* @if(forest != null){
+    @for(var y = 0; y<=forest.MaxY; y++){
+        @for(var x = 0; x <= forest.MaxX; x++){
+            @forest[x,y]?.Height;
+        }
+        <br />
+    }
+} *@
+<hr />
+<button class="btn btn-primary" @onclick="Day8_2">Räkna 8_2</button>
+<p>Resultat dag 8_2 @day8_2Result</p>
+<hr />
+
+@code {
+    private Forest? forest;
+    private int maxX;
+    private int maxY;
+    private int day8_1Result;
+    private int day8_2Result;
+    private void Day8_1()
+    {
+        forest = DayInputService.Day8();
+        day8_1Result = forest.NumberOfVisibleTrees;
+        maxX = forest.MaxX;
+        maxY = forest.MaxY;
+    }
+    private void Day8_2()
+    {
+        day8_2Result = 1;
+    }
+}

@@ -335,3 +335,76 @@ public class Folder7
         get => Files.Sum(x => x.Size) + Folders.Sum(x => x.FolderSize);
     }
 }
+
+public class Forest{
+    public List<Tree> Trees{get;set;} = new();
+
+    public Tree? this[int x, int y]{
+        get => Trees.SingleOrDefault(t => t.X == x && t.Y == y);
+    }
+
+    public int MaxX{
+        get => Trees.Max(x => x.X);
+    }
+
+    public int MaxY{
+        get => Trees.Max(x => x.Y);
+    }
+
+    public int NumberOfVisibleTrees{
+        get =>
+            Trees.Where(x => x.Visible).Count();
+    }
+
+}
+
+public class Tree{
+
+    public Tree(int x, int y, int height, Forest forest){
+        X = x;
+        Y = y;
+        Height = height;
+        Forest = forest;
+        Id = Guid.NewGuid();
+    }
+    public Guid Id{get;set;}
+    public int Height{get;set;}
+    public int X{get;set;}
+    public int Y{get;set;}
+
+    public Forest? Forest{get;}
+
+    public bool Visible{
+        get{
+            if(Forest == null) return false;
+
+            if(OnTheEdge) return true;
+
+            var H = Height;
+
+            var notVisbleDirections = 0;
+            //If any tree to the left (x < myX) ==> not visible from left;
+            if(Forest.Trees.Any(x => x.Y == Y && x.X < X && x.Height > H)) notVisbleDirections++;
+            //If any tree to the right (x > myX) heiger => not visisble from right
+            if(Forest.Trees.Any(x => x.Y == Y && x.X > X && x.Height > H)) notVisbleDirections++;
+            //If any tree above me (y < myY) is higher => not visible from above me
+            if(Forest.Trees.Any(x => x.X == X && x.Y < Y && x.Height > H)) notVisbleDirections++;
+            //If any tree below me (y > myY) is higher => not visible from below
+            if(Forest.Trees.Any(x => x.X == X && x.Y > Y && x.Height > H)) notVisbleDirections++;
+
+            //x == 4 => not visible from any direction
+            return notVisbleDirections != 4;
+
+        }
+    }
+
+    public bool OnTheEdge{
+        get =>
+            Forest == null ? false :
+            X == 0 ||
+            Y == 0 ||
+            X == Forest.MaxX ||
+            Y == Forest.MaxY;
+
+    }
+}

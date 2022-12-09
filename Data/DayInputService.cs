@@ -32,6 +32,28 @@ public class DayInputService
         get => File.ReadAllText("./Files/day7input.txt");
     }
 
+    private string Day8Input
+    {
+        get => File.ReadAllText("./Files/day8input.txt");
+    }
+
+    public Forest Day8()
+    {
+        Forest forest = new Forest();
+
+        var y = 0;
+        foreach(var row in Day8Input.Split("\n")){
+            int x = 0;
+            foreach(var treeHeight in row){
+                var h = int.Parse($"{treeHeight}");
+                forest.Trees.Add(new Tree(x, y, h, forest));
+                x++;
+            }
+            y++;
+        }
+        return forest;
+    }
+
     public RPSRaces Day2()
     {
         List<RPSRace> races = new();
