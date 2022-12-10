@@ -356,6 +356,10 @@ public class Forest{
             Trees.Where(x => x.Visible).Count();
     }
 
+    public int MaxScore{
+        get => Trees.Max(x => x.Score);
+    }
+
 }
 
 public class Tree{
@@ -374,6 +378,34 @@ public class Tree{
 
     public Forest? Forest{get;}
 
+    public int Score{ 
+        get{
+            if(Forest == null) return 0;
+            int s1 = 0, s2 = 0, s3 = 0, s4 = 0;
+            for(var x = X+1; x <= Forest.MaxX; x++){
+                s1++;
+                if(Forest[x, Y]?.Height >= Height)
+                    break;
+            }
+            for(var x = X-1; x >= 0; x--){
+                s2++;
+                if(Forest[x, Y]?.Height >= Height)
+                    break;
+            }
+            for(var y = Y+1; y <= Forest.MaxY; y++){
+                s3++;
+                if(Forest[X, y]?.Height >= Height)
+                    break;
+            }
+            for(var y = Y-1; y >= 0; y--){
+                s4++;
+                if(Forest[X, y]?.Height >= Height)
+                    break;
+            }
+            return s1 * s2 * s3 * s4;
+        }
+    }
+
     public bool Visible{
         get{
             if(Forest == null) return false;
@@ -384,13 +416,13 @@ public class Tree{
 
             var notVisbleDirections = 0;
             //If any tree to the left (x < myX) ==> not visible from left;
-            if(Forest.Trees.Any(x => x.Y == Y && x.X < X && x.Height > H)) notVisbleDirections++;
+            if(Forest.Trees.Any(x => x.Y == Y && x.X < X && x.Height >= H)) notVisbleDirections++;
             //If any tree to the right (x > myX) heiger => not visisble from right
-            if(Forest.Trees.Any(x => x.Y == Y && x.X > X && x.Height > H)) notVisbleDirections++;
+            if(Forest.Trees.Any(x => x.Y == Y && x.X > X && x.Height >= H)) notVisbleDirections++;
             //If any tree above me (y < myY) is higher => not visible from above me
-            if(Forest.Trees.Any(x => x.X == X && x.Y < Y && x.Height > H)) notVisbleDirections++;
+            if(Forest.Trees.Any(x => x.X == X && x.Y < Y && x.Height >= H)) notVisbleDirections++;
             //If any tree below me (y > myY) is higher => not visible from below
-            if(Forest.Trees.Any(x => x.X == X && x.Y > Y && x.Height > H)) notVisbleDirections++;
+            if(Forest.Trees.Any(x => x.X == X && x.Y > Y && x.Height >= H)) notVisbleDirections++;
 
             //x == 4 => not visible from any direction
             return notVisbleDirections != 4;
